@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Quiz Dashboard</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS File -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+
+    <div>
+      <div class="logo">🧠 QuizPro</div>
+
+      <div class="menu">
+        <a href="#" class="active">🏠 Dashboard</a>
+        <a href="#">📚 Categories</a>
+        <a href="#">📝 My Quizzes</a>
+        <a href="#">🏆 Leaderboard</a>
+        <a href="#">⚙ Settings</a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      © 2026 QuizPro Dashboard
+    </div>
+
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+
+      <h1>Welcome Back 👋</h1>
+
+      <div class="profile">
+        <img src="https://i.pravatar.cc/100" alt="profile">
+        <span>Admin User</span>
+      </div>
+
+    </div>
+
+    <!-- Cards -->
+    <div class="cards">
+
+      <div class="card">
+        <h2>Total Quizzes</h2>
+        <p>25</p>
+      </div>
+
+      <div class="card">
+        <h2>Students</h2>
+        <p>1.2K</p>
+      </div>
+
+      <div class="card">
+        <h2>Completed</h2>
+        <p>870</p>
+      </div>
+
+      <div class="card">
+        <h2>Top Score</h2>
+        <p>98%</p>
+      </div>
+
+    </div>
+
+    <!-- Hero Section -->
+    <div class="quiz-section">
+
+      <div class="quiz-text">
+
+        <h2>Online Python Quiz Platform</h2>
+
+        <p>
+          Improve your programming skills with interactive quizzes,
+          real-time scoring, performance analytics, and leaderboard rankings.
+          Challenge yourself and become a Python expert.
+        </p>
+
+        <a href="/quiz" class="btn">Start Quiz</a>
+
+      </div>
+
+      <div class="quiz-image">
+        🚀
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- JS File -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
+
+
+

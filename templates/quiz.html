@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+
+    <style>
+
+        body {
+            background: #121212;
+            color: white;
+            font-family: Arial;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .question-box {
+
+            background: #1f1f2e;
+            padding: 25px;
+            margin: auto;
+            margin-top: 30px;
+            border-radius: 12px;
+            width: 60%;
+            display: none;
+        }
+
+        button {
+
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: #1976D2;
+        }
+
+        #timer {
+
+            font-size: 24px;
+            color: #ff5252;
+            margin-top: 20px;
+        }
+
+    </style>
+
+    <script>
+
+        let currentQuestion = 0;
+
+        function showQuestion(index) {
+
+            let questions =
+                document.getElementsByClassName("question-box");
+
+            for (let i = 0; i < questions.length; i++) {
+                questions[i].style.display = "none";
+            }
+
+            questions[index].style.display = "block";
+        }
+
+        function nextQuestion() {
+
+            let questions =
+                document.getElementsByClassName("question-box");
+
+            if (currentQuestion < questions.length - 1) {
+
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+
+            if (currentQuestion > 0) {
+
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        // TIMER
+        let timeLeft = 60;
+
+        function startTimer() {
+
+            let timer = document.getElementById("timer");
+
+            let countdown = setInterval(function () {
+
+                timer.innerHTML =
+                    "⏰ Time Left: " + timeLeft + " sec";
+
+                timeLeft--;
+
+                if (timeLeft < 0) {
+
+                    clearInterval(countdown);
+
+                    alert("Time Up! Quiz Submitted Automatically.");
+
+                    document.getElementById("quizForm").submit();
+                }
+
+            }, 1000);
+        }
+
+        window.onload = function () {
+
+            showQuestion(currentQuestion);
+            startTimer();
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+<h1>📝 Quiz Questions</h1>
+
+<h2 id="timer"></h2>
+
+<form id="quizForm" action="/result" method="POST">
+
+    {% for q in questions %}
+
+    {% set q_index = loop.index0 %}
+
+    <div class="question-box">
+
+        <h2>
+            Question {{ loop.index }}
+            of {{ questions|length }}
+        </h2>
+
+        <h3>{{ q.question }}</h3>
+
+        <br>
+
+        {% for option in q.options %}
+
+            <input type="radio"
+                   name="q{{ q_index }}"
+                   value="{{ option }}">
+
+            {{ option }}
+
+            <br><br>
+
+        {% endfor %}
+
+        <br>
+
+        {% if not loop.first %}
+
+            <button type="button"
+                    onclick="prevQuestion()">
+
+                Previous
+
+            </button>
+
+        {% endif %}
+
+        {% if not loop.last %}
+
+            <button type="button"
+                    onclick="nextQuestion()">
+
+                Next
+
+            </button>
+
+        {% else %}
+
+            <button type="submit">
+
+                Submit Quiz
+
+            </button>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</form>
+
+</body>
+</html>

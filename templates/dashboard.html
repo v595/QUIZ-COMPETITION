@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Dashboard</title>
+
+    <!-- CSS File -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <h2>Quiz Dashboard</h2>
+
+        <ul>
+            <li>
+                <a href="/dashboard">
+                    <i class="fa fa-house"></i> Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/quiz">
+                    <i class="fa fa-play"></i> Start Quiz
+                </a>
+            </li>
+
+            <li>
+                <a href="/result">
+                    <i class="fa fa-chart-column"></i> Results
+                </a>
+            </li>
+
+            <li>
+                <a href="/login">
+                    <i class="fa fa-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <div class="topbar">
+
+            <div class="welcome-text">
+                <h1>Welcome Back 👋</h1>
+                <p>Ready to test your knowledge today?</p>
+            </div>
+
+            <!-- Profile -->
+            <div class="profile-section">
+                <img src="{{ url_for('static', filename='images/profile.jpg') }}"
+                     alt="Profile Image"
+                     class="profile-image">
+            </div>
+
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="cards">
+
+            <div class="card">
+                <i class="fa fa-question-circle"></i>
+                <h2>25+</h2>
+                <p>Total Quizzes</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-trophy"></i>
+                <h2>80%</h2>
+                <p>Best Score</p>
+            </div>
+
+            <div class="card">
+                <i class="fa fa-clock"></i>
+                <h2>12</h2>
+                <p>Quizzes Taken</p>
+            </div>
+
+        </div>
+
+        <!-- Start Quiz Section -->
+        <div class="start-section">
+
+            <h2>Start Your Learning Journey</h2>
+
+            <p>
+                Improve your skills and challenge yourself with exciting quizzes.
+            </p>
+
+            <a href="/quiz">
+                <button>Start Quiz</button>
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript File -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
