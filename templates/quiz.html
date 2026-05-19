@@ -87,35 +87,43 @@
         }
 
         // TIMER
-        let timeLeft = 180;
+          let timeLeft = 180;
 
-        function startTimer() {
+    function startTimer() {
 
-            let timer = document.getElementById("timer");
+        let timer = document.getElementById("timer");
 
-            let countdown = setInterval(function () {
+        let countdown = setInterval(function () {
 
-                timer.innerHTML =
-                    "⏰ Time Left: " + timeLeft + " sec";
+            // Convert into minutes and seconds
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
 
-                timeLeft--;
+            // Add leading zero
+            seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                if (timeLeft < 0) {
+            // Display timer
+            timer.innerHTML =
+                "⏰ Time Left: " + minutes + ":" + seconds;
 
-                    clearInterval(countdown);
+            timeLeft--;
 
-                    alert("Time Up! Quiz Submitted Automatically.");
+            if (timeLeft < 0) {
 
-                    document.getElementById("quizForm").submit();
-                }
+                clearInterval(countdown);
 
-            }, 1000);
-        }
+                alert("Time Up! Quiz Submitted Automatically.");
 
-        window.onload = function () {
+                document.getElementById("quizForm").submit();
+            }
 
-            showQuestion(currentQuestion);
-            startTimer();
+        }, 1000);
+    }
+
+    window.onload = function () {
+
+        showQuestion(currentQuestion);
+        startTimer();
         }
 
     </script>
