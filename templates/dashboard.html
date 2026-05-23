@@ -3,113 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Dashboard</title>
-
-    <!-- CSS File -->
+    <title>Dashboard – QuizMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body>
-
-    <!-- Sidebar -->
     <div class="sidebar">
-
-        <h2>Quiz Dashboard</h2>
-
-        <ul>
-            <li>
-                <a href="/dashboard">
-                    <i class="fa fa-house"></i> Dashboard
-                </a>
-            </li>
-
-            <li>
-                <a href="/quiz">
-                    <i class="fa fa-play"></i> Start Quiz
-                </a>
-            </li>
-
-            <li>
-                <a href="/result">
-                    <i class="fa fa-chart-column"></i> Results
-                </a>
-            </li>
-
-            <li>
-                <a href="/login">
-                    <i class="fa fa-right-from-bracket"></i> Logout
-                </a>
-            </li>
-        </ul>
-
+        <div class="sidebar-logo">🎓 QuizMaster</div>
+        <nav>
+            <a href="/dashboard" class="nav-link active"><i class="fa fa-house"></i> Dashboard</a>
+            <a href="/select" class="nav-link"><i class="fa fa-play"></i> Start Quiz</a>
+            <a href="/profile" class="nav-link"><i class="fa fa-user"></i> Profile</a>
+            <a href="/logout" class="nav-link logout"><i class="fa fa-right-from-bracket"></i> Logout</a>
+        </nav>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-
-        <!-- Topbar -->
         <div class="topbar">
-
-            <div class="welcome-text">
-                <h1>Welcome Back 👋</h1>
-                <p>Ready to test your knowledge today?</p>
+            <div>
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-sub">Welcome back, {{ user.name }}! Ready to learn today?</p>
             </div>
-
-            <!-- Profile -->
-            <div class="profile-section">
-                <img src="{{ url_for('static', filename='images/profile.jpg') }}"
-                     alt="Profile Image"
-                     class="profile-image">
-            </div>
-
-        </div>
-
-        <!-- Dashboard Cards -->
-        <div class="cards">
-
-            <div class="card">
-                <i class="fa fa-question-circle"></i>
-                <h2>25+</h2>
-                <p>Total Quizzes</p>
-            </div>
-
-            <div class="card">
-                <i class="fa fa-trophy"></i>
-                <h2>80%</h2>
-                <p>Best Score</p>
-            </div>
-
-            <div class="card">
-                <i class="fa fa-clock"></i>
-                <h2>12</h2>
-                <p>Quizzes Taken</p>
-            </div>
-
-        </div>
-
-        <!-- Start Quiz Section -->
-        <div class="start-section">
-
-            <h2>Start Your Learning Journey</h2>
-
-            <p>
-                Improve your skills and challenge yourself with exciting quizzes.
-            </p>
-
-            <a href="/quiz">
-                <button>Start Quiz</button>
+            <a href="/profile" class="avatar-btn">
+                <div class="avatar">{{ user.avatar }}</div>
+                <div>
+                    <div class="avatar-name">{{ user.name }}</div>
+                    <div class="avatar-email">{{ email }}</div>
+                </div>
             </a>
-
         </div>
 
+        <!-- Stat Cards -->
+        <div class="stat-grid">
+            <div class="stat-card purple">
+                <div class="stat-icon"><i class="fa fa-list-check"></i></div>
+                <div class="stat-val">{{ total_quizzes }}</div>
+                <div class="stat-label">Quizzes Taken</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fa fa-trophy"></i></div>
+                <div class="stat-val">{{ best_pct }}%</div>
+                <div class="stat-label">Best Score</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
+                <div class="stat-val">3</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fa fa-question"></i></div>
+                <div class="stat-val">75</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+        </div>
+
+        <!-- Category Performance -->
+        <div class="section-title">Category Performance</div>
+        <div class="cat-grid">
+            {% for cat_key, info in cat_info.items() %}
+            {% set s = cat_stats[cat_key] %}
+            {% set avg = ((s.total_score / s.total_max * 100) | round(1)) if s.total_max > 0 else 0 %}
+            <div class="cat-card">
+                <div class="cat-header">
+                    <span class="cat-icon">{{ info.icon }}</span>
+                    <span class="cat-name">{{ info.name }}</span>
+                </div>
+                <div class="cat-taken">{{ s.taken }} quiz{{ 'zes' if s.taken != 1 else '' }} taken</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" style="width:{{ avg }}%; background:{{ info.color }}"></div>
+                </div>
+                <div class="cat-avg">Avg: {{ avg }}%</div>
+                <a href="/quiz?category={{ cat_key }}" class="cat-play-btn" style="background:{{ info.color }}">Play →</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Results -->
+        {% if recent %}
+        <div class="section-title">Recent Results</div>
+        <div class="table-wrap">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Date</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in recent %}
+                    <tr>
+                        <td>{{ cat_info[r.category].icon }} {{ cat_info[r.category].name }}</td>
+                        <td>{{ r.score }} / {{ r.total }}</td>
+                        <td>
+                            <div class="mini-bar-wrap">
+                                <div class="mini-bar" style="width:{{ r.pct }}%; background:{% if r.pct>=70 %}#10b981{% elif r.pct>=40 %}#f59e0b{% else %}#ef4444{% endif %}"></div>
+                                <span>{{ r.pct }}%</span>
+                            </div>
+                        </td>
+                        <td>{{ r.date }}</td>
+                        <td>
+                            {% if r.pct >= 70 %}<span class="badge-green">Excellent</span>
+                            {% elif r.pct >= 40 %}<span class="badge-yellow">Good</span>
+                            {% else %}<span class="badge-red">Needs Work</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div style="font-size:48px">🎯</div>
+            <h3>No quizzes taken yet</h3>
+            <p>Start your first quiz to see your performance here!</p>
+            <a href="/select" class="start-btn">Start a Quiz</a>
+        </div>
+        {% endif %}
     </div>
-
-    <!-- JavaScript File -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-
 </body>
 </html>

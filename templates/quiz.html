@@ -1,207 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quiz</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz – {{ cat_info.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-
-        body {
-            background: #121212;
-            color: white;
-            font-family: Arial;
-            padding: 30px;
-            text-align: center;
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+        body{background:#0f172a;color:#f1f5f9;min-height:100vh;}
+        .quiz-header{
+            background:#1e293b;padding:16px 30px;display:flex;
+            align-items:center;justify-content:space-between;
+            border-bottom:1px solid #334155;position:sticky;top:0;z-index:100;
         }
-
-        .question-box {
-
-            background: #1f1f2e;
-            padding: 25px;
-            margin: auto;
-            margin-top: 30px;
-            border-radius: 12px;
-            width: 60%;
-            display: none;
+        .quiz-logo{font-size:20px;font-weight:700;color:#818cf8;}
+        .quiz-cat{font-size:15px;color:#94a3b8;}
+        #timer{
+            font-size:20px;font-weight:700;color:#f87171;
+            background:#450a0a;padding:8px 18px;border-radius:10px;
+            display:flex;align-items:center;gap:8px;
         }
-
-        button {
-
-            background: #2196F3;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
+        .quiz-body{max-width:760px;margin:0 auto;padding:40px 20px;}
+        .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+        .progress-label{font-size:14px;color:#94a3b8;}
+        .progress-track{background:#1e293b;border-radius:10px;height:8px;overflow:hidden;margin-bottom:30px;}
+        .progress-fill{height:100%;border-radius:10px;transition:width 0.4s ease;}
+        .q-box{background:#1e293b;border-radius:20px;padding:36px;display:none;box-shadow:0 8px 30px rgba(0,0,0,0.3);}
+        .q-box.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .q-num{font-size:13px;color:#94a3b8;margin-bottom:8px;}
+        .q-marks{
+            display:inline-block;background:#1d4ed8;color:#93c5fd;
+            font-size:12px;padding:3px 10px;border-radius:20px;margin-bottom:14px;
         }
-
-        button:hover {
-            background: #1976D2;
+        .q-text{font-size:20px;font-weight:600;line-height:1.5;margin-bottom:28px;color:#f1f5f9;}
+        .options{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+        .option-label{
+            display:flex;align-items:center;gap:14px;
+            background:#0f172a;border:2px solid #334155;
+            border-radius:14px;padding:16px 20px;cursor:pointer;transition:0.2s;
         }
-
-        #timer {
-
-            font-size: 24px;
-            color: #ff5252;
-            margin-top: 20px;
+        .option-label:hover{border-color:#6366f1;background:#1e1b4b;}
+        .option-label input{display:none;}
+        .option-label input:checked ~ .opt-text{color:#a5b4fc;}
+        .option-label:has(input:checked){border-color:#6366f1;background:#1e1b4b;}
+        .opt-letter{
+            width:32px;height:32px;border-radius:8px;background:#1e293b;
+            display:flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:14px;color:#94a3b8;flex-shrink:0;
+            border:2px solid #334155;transition:0.2s;
         }
-
+        .option-label:has(input:checked) .opt-letter{background:#6366f1;color:white;border-color:#6366f1;}
+        .opt-text{font-size:15px;color:#e2e8f0;}
+        .nav-btns{display:flex;gap:12px;justify-content:flex-end;}
+        .btn-nav{
+            padding:12px 28px;border:none;border-radius:12px;
+            font-size:15px;font-weight:600;cursor:pointer;transition:0.2s;
+        }
+        .btn-prev{background:#334155;color:#e2e8f0;}
+        .btn-prev:hover{background:#475569;}
+        .btn-next{background:#6366f1;color:white;}
+        .btn-next:hover{background:#4f46e5;}
+        .btn-submit{background:#10b981;color:white;}
+        .btn-submit:hover{background:#059669;}
+        .q-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+        .qn-dot{
+            width:36px;height:36px;border-radius:10px;border:2px solid #334155;
+            background:#1e293b;color:#94a3b8;font-size:13px;font-weight:600;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;
+        }
+        .qn-dot.answered{background:#064e3b;border-color:#10b981;color:#6ee7b7;}
+        .qn-dot.current{border-color:#6366f1;color:#818cf8;}
     </style>
-
-    <script>
-
-        let currentQuestion = 0;
-
-        function showQuestion(index) {
-
-            let questions =
-                document.getElementsByClassName("question-box");
-
-            for (let i = 0; i < questions.length; i++) {
-                questions[i].style.display = "none";
-            }
-
-            questions[index].style.display = "block";
-        }
-
-        function nextQuestion() {
-
-            let questions =
-                document.getElementsByClassName("question-box");
-
-            if (currentQuestion < questions.length - 1) {
-
-                currentQuestion++;
-                showQuestion(currentQuestion);
-            }
-        }
-
-        function prevQuestion() {
-
-            if (currentQuestion > 0) {
-
-                currentQuestion--;
-                showQuestion(currentQuestion);
-            }
-        }
-
-        // TIMER
-          let timeLeft = 180;
-
-    function startTimer() {
-
-        let timer = document.getElementById("timer");
-
-        let countdown = setInterval(function () {
-
-            // Convert into minutes and seconds
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-
-            // Add leading zero
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            // Display timer
-            timer.innerHTML =
-                "⏰ Time Left: " + minutes + ":" + seconds;
-
-            timeLeft--;
-
-            if (timeLeft < 0) {
-
-                clearInterval(countdown);
-
-                alert("Time Up! Quiz Submitted Automatically.");
-
-                document.getElementById("quizForm").submit();
-            }
-
-        }, 1000);
-    }
-
-    window.onload = function () {
-
-        showQuestion(currentQuestion);
-        startTimer();
-        }
-
-    </script>
-
 </head>
-
 <body>
-
-<h1>📝 Quiz Questions</h1>
-
-<h2 id="timer"></h2>
-
-<form id="quizForm" action="/result" method="POST">
-
-    {% for q in questions %}
-
-    {% set q_index = loop.index0 %}
-
-    <div class="question-box">
-
-        <h2>
-            Question {{ loop.index }}
-            of {{ questions|length }}
-        </h2>
-
-        <h3>{{ q.question }}</h3>
-
-        <br>
-
-        {% for option in q.options %}
-
-            <input type="radio"
-                   name="q{{ q_index }}"
-                   value="{{ option }}">
-
-            {{ option }}
-
-            <br><br>
-
-        {% endfor %}
-
-        <br>
-
-        {% if not loop.first %}
-
-            <button type="button"
-                    onclick="prevQuestion()">
-
-                Previous
-
-            </button>
-
-        {% endif %}
-
-        {% if not loop.last %}
-
-            <button type="button"
-                    onclick="nextQuestion()">
-
-                Next
-
-            </button>
-
-        {% else %}
-
-            <button type="submit">
-
-                Submit Quiz
-
-            </button>
-
-        {% endif %}
-
+    <div class="quiz-header">
+        <span class="quiz-logo">🎓 QuizMaster</span>
+        <span class="quiz-cat">{{ cat_info.icon }} {{ cat_info.name }}</span>
+        <div id="timer"><i class="fa fa-clock"></i> <span id="time-display">10:00</span></div>
     </div>
 
-    {% endfor %}
+    <div class="quiz-body">
+        <div class="progress-header">
+            <span class="progress-label" id="prog-label">Question 1 of {{ questions|length }}</span>
+            <span class="progress-label" id="answered-count">0 answered</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="prog-fill" style="width:0%;background:{{ cat_info.color }}"></div>
+        </div>
 
-</form>
+        <!-- Question navigator dots -->
+        <div class="q-nav" id="qnav">
+            {% for q in questions %}
+            <div class="qn-dot {% if loop.first %}current{% endif %}" id="dot-{{ loop.index0 }}" onclick="goTo({{ loop.index0 }})">{{ loop.index }}</div>
+            {% endfor %}
+        </div>
 
+        <form id="quizForm" action="/result" method="POST">
+            {% for q in questions %}
+            {% set i = loop.index0 %}
+            <div class="q-box {% if loop.first %}active{% endif %}" id="qbox-{{ i }}">
+                <div class="q-num">Question {{ loop.index }} of {{ questions|length }}</div>
+                <div class="q-marks">⭐ {{ q.marks }} marks</div>
+                <div class="q-text">{{ q.question }}</div>
+                <div class="options">
+                    {% set letters = ['A','B','C','D'] %}
+                    {% for opt in q.options %}
+                    <label class="option-label">
+                        <input type="radio" name="q{{ i }}" value="{{ opt }}" onchange="markAnswered({{ i }})">
+                        <span class="opt-letter">{{ letters[loop.index0] }}</span>
+                        <span class="opt-text">{{ opt }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                <div class="nav-btns">
+                    {% if not loop.first %}
+                    <button type="button" class="btn-nav btn-prev" onclick="goTo({{ i-1 }})"><i class="fa fa-arrow-left"></i> Previous</button>
+                    {% endif %}
+                    {% if not loop.last %}
+                    <button type="button" class="btn-nav btn-next" onclick="goTo({{ i+1 }})">Next <i class="fa fa-arrow-right"></i></button>
+                    {% else %}
+                    <button type="submit" class="btn-nav btn-submit"><i class="fa fa-paper-plane"></i> Submit Quiz</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+
+    <script>
+        let current = 0;
+        const total = {{ questions|length }};
+        const answered = new Set();
+
+        function goTo(idx){
+            document.getElementById('qbox-'+current).classList.remove('active');
+            document.getElementById('dot-'+current).classList.remove('current');
+            current = idx;
+            document.getElementById('qbox-'+current).classList.add('active');
+            document.getElementById('dot-'+current).classList.add('current');
+            document.getElementById('prog-label').textContent = `Question ${current+1} of ${total}`;
+            const pct = ((current+1)/total*100).toFixed(0);
+            document.getElementById('prog-fill').style.width = pct+'%';
+        }
+
+        function markAnswered(idx){
+            answered.add(idx);
+            document.getElementById('dot-'+idx).classList.add('answered');
+            document.getElementById('answered-count').textContent = answered.size+' answered';
+        }
+
+        // Timer: 10 minutes
+        let timeLeft = 600;
+        const timerEl = document.getElementById('time-display');
+        const countdown = setInterval(()=>{
+            const m = Math.floor(timeLeft/60);
+            const s = timeLeft%60;
+            timerEl.textContent = m+':'+(s<10?'0':'')+s;
+            if(timeLeft<=60) document.getElementById('timer').style.background='#7f1d1d';
+            if(timeLeft<=0){ clearInterval(countdown); alert('Time up! Submitting...'); document.getElementById('quizForm').submit(); }
+            timeLeft--;
+        },1000);
+    </script>
 </body>
 </html>

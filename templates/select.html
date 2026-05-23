@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Category – QuizMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">🎓 QuizMaster</div>
+        <nav>
+            <a href="/dashboard" class="nav-link"><i class="fa fa-house"></i> Dashboard</a>
+            <a href="/select" class="nav-link active"><i class="fa fa-play"></i> Start Quiz</a>
+            <a href="/profile" class="nav-link"><i class="fa fa-user"></i> Profile</a>
+            <a href="/logout" class="nav-link logout"><i class="fa fa-right-from-bracket"></i> Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1 class="page-title">Choose a Category</h1>
+                <p class="page-sub">Select a topic to start your quiz</p>
+            </div>
+        </div>
+
+        <div class="select-grid">
+            {% for key, info in categories.items() %}
+            <a href="/quiz?category={{ key }}" class="select-card" style="--accent:{{ info.color }}">
+                <div class="select-icon">{{ info.icon }}</div>
+                <h2 class="select-name">{{ info.name }}</h2>
+                <p class="select-desc">
+                    {% if key == 'software' %}Test your knowledge of programming, web development, and computer fundamentals.
+                    {% elif key == 'general' %}Explore world geography, science, history, and everyday facts.
+                    {% else %}How well do you know cricket? Rules, legends, records and more.
+                    {% endif %}
+                </p>
+                <div class="select-meta">
+                    <span><i class="fa fa-circle-question"></i> 20 Questions</span>
+                    <span><i class="fa fa-clock"></i> ~6 minutes</span>
+                </div>
+                <div class="select-play-btn" style="background:{{ info.color }}">Start Quiz →</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

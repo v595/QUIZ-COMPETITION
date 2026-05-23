@@ -1,101 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login</title>
-
-    <!-- CSS File -->
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Login – QuizMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body { min-height:100vh; display:flex; background:#0f172a; }
+        .left {
+            width:45%; background:linear-gradient(135deg,#6366f1,#8b5cf6);
+            display:flex; flex-direction:column; justify-content:center;
+            align-items:center; padding:60px; color:white; position:relative; overflow:hidden;
+        }
+        .left::before {
+            content:''; position:absolute; width:400px; height:400px;
+            background:rgba(255,255,255,0.05); border-radius:50%;
+            top:-100px; right:-100px;
+        }
+        .left::after {
+            content:''; position:absolute; width:300px; height:300px;
+            background:rgba(255,255,255,0.05); border-radius:50%;
+            bottom:-80px; left:-80px;
+        }
+        .left-icon { font-size:80px; margin-bottom:30px; }
+        .left h1 { font-size:40px; font-weight:700; margin-bottom:15px; }
+        .left p { font-size:16px; opacity:0.85; text-align:center; line-height:1.7; }
+        .badges { display:flex; gap:12px; margin-top:30px; flex-wrap:wrap; justify-content:center; }
+        .badge {
+            background:rgba(255,255,255,0.15); padding:8px 16px;
+            border-radius:20px; font-size:13px; backdrop-filter:blur(10px);
+        }
+        .right {
+            width:55%; display:flex; align-items:center; justify-content:center; padding:40px;
+        }
+        .form-box {
+            background:#1e293b; width:100%; max-width:440px;
+            padding:50px 45px; border-radius:24px;
+            box-shadow:0 20px 60px rgba(0,0,0,0.4);
+            animation:slideUp 0.5s ease;
+        }
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .form-box h2 { font-size:28px; color:#f1f5f9; margin-bottom:6px; }
+        .form-box .sub { color:#94a3b8; font-size:14px; margin-bottom:32px; }
+        .success-banner {
+            background:#064e3b; border:1px solid #10b981; color:#6ee7b7;
+            padding:12px 16px; border-radius:12px; font-size:14px;
+            margin-bottom:20px; display:flex; align-items:center; gap:8px;
+        }
+        .error-banner {
+            background:#450a0a; border:1px solid #ef4444; color:#fca5a5;
+            padding:12px 16px; border-radius:12px; font-size:14px;
+            margin-bottom:20px; display:flex; align-items:center; gap:8px;
+        }
+        .field { margin-bottom:20px; }
+        .field label { display:block; color:#94a3b8; font-size:13px; margin-bottom:8px; font-weight:500; }
+        .input-wrap { position:relative; }
+        .input-wrap i { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#475569; font-size:15px; }
+        .input-wrap input {
+            width:100%; padding:14px 14px 14px 44px;
+            background:#0f172a; border:1.5px solid #334155;
+            border-radius:12px; color:#f1f5f9; font-size:15px;
+            transition:0.3s; outline:none;
+        }
+        .input-wrap input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
+        .input-wrap input::placeholder { color:#475569; }
+        .toggle-pw {
+            position:absolute; right:14px; top:50%; transform:translateY(-50%);
+            color:#475569; cursor:pointer; font-size:15px;
+        }
+        .btn {
+            width:100%; padding:15px; background:linear-gradient(135deg,#6366f1,#8b5cf6);
+            border:none; border-radius:12px; color:white; font-size:16px;
+            font-weight:600; cursor:pointer; transition:0.3s; margin-top:8px;
+        }
+        .btn:hover { opacity:0.9; transform:translateY(-1px); }
+        .bottom-link { text-align:center; margin-top:24px; color:#64748b; font-size:14px; }
+        .bottom-link a { color:#818cf8; text-decoration:none; font-weight:600; }
+        .bottom-link a:hover { text-decoration:underline; }
+        @media(max-width:768px){ .left{display:none} .right{width:100%} }
+    </style>
 </head>
-
-<body class="login-body">
-
-    <div class="login-wrapper">
-
-        <!-- Left Side -->
-        <div class="login-left">
-
-            <h1>Quiz App</h1>
-
-            <p>
-                Test your knowledge, improve your skills,
-                and challenge yourself with exciting quizzes.
-            </p>
-
-            <div class="login-icon">
-                <i class="fa-solid fa-graduation-cap"></i>
-            </div>
-
+<body>
+    <div class="left">
+        <div class="left-icon">🎓</div>
+        <h1>QuizMaster</h1>
+        <p>Test your knowledge, challenge yourself, and track your progress across multiple categories.</p>
+        <div class="badges">
+            <span class="badge">💻 Software</span>
+            <span class="badge">🌍 General Knowledge</span>
+            <span class="badge">🏏 Cricket</span>
         </div>
-
-        <!-- Right Side -->
-        <div class="login-right">
-
-            <div class="login-container">
-
-                <h2>Welcome Back 👋</h2>
-
-                <p class="login-subtitle">
-                    Login to continue your learning journey
-                </p>
-
-                <form method="POST">
-
-                    <!-- Username -->
-                    <div class="input-group">
-
-                        <i class="fa fa-user"></i>
-
-                        <input type="text"
-                               name="username"
-                               placeholder="Enter Username"
-                               required>
-
-                    </div>
-
-                    <!-- Password -->
-                    <div class="input-group">
-
-                        <i class="fa fa-lock"></i>
-
-                        <input type="password"
-                               name="password"
-                               placeholder="Enter Password"
-                               required>
-
-                    </div>
-
-                    <!-- Login Button -->
-                    <button type="submit" class="login-btn">
-                        Login
-                    </button>
-
-                </form>
-
-                <!-- Signup -->
-                <p class="signup-text">
-                    Don't have an account?
-                    <a href="/signup">Signup</a>
-                </p>
-
-            </div>
-
-        </div>
-
     </div>
+    <div class="right">
+        <div class="form-box">
+            <h2>Welcome Back 👋</h2>
+            <p class="sub">Sign in to continue your learning journey</p>
 
+            {% if registered %}
+            <div class="success-banner"><i class="fa fa-check-circle"></i> Account created! Please log in.</div>
+            {% endif %}
+            {% if error %}
+            <div class="error-banner"><i class="fa fa-circle-exclamation"></i> {{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+                <div class="field">
+                    <label>Email Address</label>
+                    <div class="input-wrap">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" name="email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" name="password" id="pw" placeholder="Enter your password" required>
+                        <i class="fa fa-eye toggle-pw" onclick="togglePw()"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <div class="bottom-link">Don't have an account? <a href="/signup">Sign Up</a></div>
+        </div>
+    </div>
+    <script>
+        function togglePw(){
+            const pw=document.getElementById('pw');
+            const icon=document.querySelector('.toggle-pw');
+            if(pw.type==='password'){pw.type='text';icon.classList.replace('fa-eye','fa-eye-slash');}
+            else{pw.type='password';icon.classList.replace('fa-eye-slash','fa-eye');}
+        }
+    </script>
 </body>
-
 </html>

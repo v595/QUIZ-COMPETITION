@@ -1,89 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quiz Result</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result – QuizMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-
-        body {
-            background: #1e1e2f;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-            padding-top: 100px;
+        .result-hero{
+            background:linear-gradient(135deg,#1e293b,#0f172a);
+            border-radius:20px;padding:48px;text-align:center;
+            border:1px solid #334155;margin-bottom:30px;
         }
-
-        .score-box {
-            background: #2b2b40;
-            width: 400px;
-            margin: auto;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        .result-emoji{font-size:72px;margin-bottom:16px;}
+        .result-title{font-size:32px;font-weight:700;color:#f1f5f9;margin-bottom:8px;}
+        .result-sub{font-size:16px;color:#94a3b8;margin-bottom:30px;}
+        .score-circle{
+            width:160px;height:160px;border-radius:50%;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            margin:0 auto 30px;border:6px solid;
         }
-
-        h1 {
-            margin-bottom: 10px;
+        .score-num{font-size:42px;font-weight:700;}
+        .score-label{font-size:13px;color:#94a3b8;}
+        .result-stats{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;}
+        .r-stat{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px 28px;text-align:center;}
+        .r-stat-val{font-size:24px;font-weight:700;color:#f1f5f9;}
+        .r-stat-lbl{font-size:13px;color:#64748b;}
+        .result-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+        .action-btn{
+            padding:13px 28px;border-radius:12px;font-size:15px;
+            font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:0.2s;
         }
-
-        .score {
-            font-size: 45px;
-            color: #4CAF50;
+        .btn-play{background:#6366f1;color:white;}
+        .btn-play:hover{background:#4f46e5;}
+        .btn-dash{background:#334155;color:#e2e8f0;}
+        .btn-dash:hover{background:#475569;}
+        .review-section{margin-top:30px;}
+        .review-title{font-size:20px;font-weight:700;color:#f1f5f9;margin-bottom:20px;}
+        .review-item{
+            background:#1e293b;border-radius:16px;padding:22px;
+            margin-bottom:14px;border-left:4px solid;
         }
-
-        .message {
-            font-size: 20px;
-            margin: 20px 0;
-        }
-
-        a {
-            color: white;
-            text-decoration: none;
-            background: #4CAF50;
-            padding: 12px 20px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 15px;
-        }
-
-        a:hover {
-            background: #45a049;
-        }
-
+        .review-item.correct{border-color:#10b981;}
+        .review-item.wrong{border-color:#ef4444;}
+        .review-item.skip{border-color:#475569;}
+        .review-q{font-size:15px;font-weight:600;color:#f1f5f9;margin-bottom:12px;}
+        .review-answers{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+        .ans-chip{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;}
+        .ans-yours{background:#1e3a5f;color:#93c5fd;}
+        .ans-correct{background:#064e3b;color:#6ee7b7;}
+        .ans-wrong{background:#450a0a;color:#fca5a5;}
+        .review-marks{font-size:12px;color:#64748b;margin-top:8px;}
     </style>
 </head>
-
 <body>
-
-<div class="score-box">
-
-    <h1>🎉 Quiz Completed</h1>
-
-    <h2>Your Score</h2>
-
-    <div class="score">
-        {{ score }}/{{ total }}
+    <div class="sidebar">
+        <div class="sidebar-logo">🎓 QuizMaster</div>
+        <nav>
+            <a href="/dashboard" class="nav-link"><i class="fa fa-house"></i> Dashboard</a>
+            <a href="/select" class="nav-link"><i class="fa fa-play"></i> Start Quiz</a>
+            <a href="/profile" class="nav-link"><i class="fa fa-user"></i> Profile</a>
+            <a href="/logout" class="nav-link logout"><i class="fa fa-right-from-bracket"></i> Logout</a>
+        </nav>
     </div>
 
-    <div class="message">
+    <div class="main-content">
+        <div class="result-hero">
+            <div class="result-emoji">
+                {% if pct >= 70 %}🏆{% elif pct >= 40 %}👍{% else %}📚{% endif %}
+            </div>
+            <div class="result-title">
+                {% if pct >= 70 %}Excellent Performance!
+                {% elif pct >= 40 %}Good Job!
+                {% else %}Keep Practicing!{% endif %}
+            </div>
+            <div class="result-sub">{{ cat_info.icon }} {{ cat_info.name }} Quiz Completed</div>
 
-        {% if score >= total * 0.7 %}
-            Excellent Performance 🚀
-        {% elif score >= total * 0.4 %}
-            Good Job 👍
-        {% else %}
-            Keep Practicing 📚
-        {% endif %}
+            <div class="score-circle" style="border-color:{% if pct>=70 %}#10b981{% elif pct>=40 %}#f59e0b{% else %}#ef4444{% endif %}; color:{% if pct>=70 %}#10b981{% elif pct>=40 %}#f59e0b{% else %}#ef4444{% endif %}">
+                <span class="score-num">{{ pct }}%</span>
+                <span class="score-label">Score</span>
+            </div>
 
+            <div class="result-stats">
+                <div class="r-stat">
+                    <div class="r-stat-val">{{ score }}</div>
+                    <div class="r-stat-lbl">Marks Scored</div>
+                </div>
+                <div class="r-stat">
+                    <div class="r-stat-val">{{ total }}</div>
+                    <div class="r-stat-lbl">Total Marks</div>
+                </div>
+                <div class="r-stat">
+                    <div class="r-stat-val" style="color:#10b981">{{ details|selectattr('correct')|list|length }}</div>
+                    <div class="r-stat-lbl">Correct</div>
+                </div>
+                <div class="r-stat">
+                    <div class="r-stat-val" style="color:#ef4444">{{ details|rejectattr('correct')|selectattr('selected')|list|length }}</div>
+                    <div class="r-stat-lbl">Wrong</div>
+                </div>
+                <div class="r-stat">
+                    <div class="r-stat-val" style="color:#64748b">{{ details|selectattr('selected', 'none')|list|length }}</div>
+                    <div class="r-stat-lbl">Skipped</div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <a href="/quiz?category={{ category }}" class="action-btn btn-play">🔄 Play Again</a>
+                <a href="/select" class="action-btn btn-play" style="background:#8b5cf6">🎯 New Category</a>
+                <a href="/dashboard" class="action-btn btn-dash">📊 Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Answer Review -->
+        <div class="review-section">
+            <div class="review-title">📋 Question Review</div>
+            {% for d in details %}
+            <div class="review-item {% if d.correct %}correct{% elif d.selected %}wrong{% else %}skip{% endif %}">
+                <div class="review-q">
+                    {% if d.correct %}✅{% elif d.selected %}❌{% else %}⏭️{% endif %}
+                    Q{{ loop.index }}. {{ d.question }}
+                </div>
+                <div class="review-answers">
+                    {% if d.selected and not d.correct %}
+                    <span class="ans-chip ans-wrong">Your answer: {{ d.selected }}</span>
+                    {% endif %}
+                    {% if d.correct %}
+                    <span class="ans-chip ans-correct">✓ {{ d.answer }}</span>
+                    {% else %}
+                    <span class="ans-chip ans-correct">Correct: {{ d.answer }}</span>
+                    {% endif %}
+                    {% if not d.selected %}
+                    <span class="ans-chip" style="background:#1e293b;color:#94a3b8">Skipped</span>
+                    {% endif %}
+                </div>
+                <div class="review-marks">
+                    ⭐ {{ d.marks }} marks
+                    {% if d.correct %} · <span style="color:#10b981">+{{ d.marks }} earned</span>
+                    {% elif d.selected %} · <span style="color:#ef4444">-1 penalty</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-
-    <a href="/quiz">Play Again</a>
-
-    <br><br>
-
-    <a href="/logout">Logout</a>
-
-</div>
-
 </body>
 </html>

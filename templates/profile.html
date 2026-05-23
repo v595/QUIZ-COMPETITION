@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile – QuizMaster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">🎓 QuizMaster</div>
+        <nav>
+            <a href="/dashboard" class="nav-link"><i class="fa fa-house"></i> Dashboard</a>
+            <a href="/select" class="nav-link"><i class="fa fa-play"></i> Start Quiz</a>
+            <a href="/profile" class="nav-link active"><i class="fa fa-user"></i> Profile</a>
+            <a href="/logout" class="nav-link logout"><i class="fa fa-right-from-bracket"></i> Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1 class="page-title">My Profile</h1>
+                <p class="page-sub">Manage your account details</p>
+            </div>
+            <div class="avatar-btn">
+                <div class="avatar">{{ user.avatar }}</div>
+                <div>
+                    <div class="avatar-name">{{ user.name }}</div>
+                    <div class="avatar-email">{{ email }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-avatar-big">{{ user.avatar }}</div>
+                <h2 class="profile-name">{{ user.name }}</h2>
+                <p class="profile-email"><i class="fa fa-envelope"></i> {{ email }}</p>
+                <p class="profile-joined"><i class="fa fa-calendar"></i> Joined {{ user.joined }}</p>
+                <div class="profile-divider"></div>
+                <div class="profile-info-row"><span>Account Type</span><span class="badge-green">Student</span></div>
+                <div class="profile-info-row"><span>Status</span><span class="badge-green">Active</span></div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="profile-form-box">
+                <h3>Edit Profile</h3>
+
+                {% if message %}
+                <div class="success-banner"><i class="fa fa-check-circle"></i> {{ message }}</div>
+                {% endif %}
+                {% if error %}
+                <div class="error-banner"><i class="fa fa-circle-exclamation"></i> {{ error }}</div>
+                {% endif %}
+
+                <form method="POST">
+                    <div class="field">
+                        <label>Full Name</label>
+                        <div class="input-wrap">
+                            <i class="fa fa-user icon"></i>
+                            <input type="text" name="name" value="{{ user.name }}" placeholder="Your name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Email (cannot change)</label>
+                        <div class="input-wrap">
+                            <i class="fa fa-envelope icon"></i>
+                            <input type="email" value="{{ email }}" disabled style="opacity:0.5">
+                        </div>
+                    </div>
+                    <div class="section-divider">Change Password (optional)</div>
+                    <div class="field">
+                        <label>Current Password</label>
+                        <div class="input-wrap">
+                            <i class="fa fa-lock icon"></i>
+                            <input type="password" name="current_password" placeholder="Enter current password">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>New Password</label>
+                        <div class="input-wrap">
+                            <i class="fa fa-lock icon"></i>
+                            <input type="password" name="new_password" placeholder="Min 6 characters">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Confirm New Password</label>
+                        <div class="input-wrap">
+                            <i class="fa fa-lock icon"></i>
+                            <input type="password" name="confirm_password" placeholder="Repeat new password">
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
