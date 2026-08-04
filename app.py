@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "quiz_secret_key_2024"
+app.secret_key = os.environ.get("SECRET_KEY", "quiz_secret_key_2024")
 
 USER_FILE = "users.json"
 RESULTS_FILE = "results.json"
